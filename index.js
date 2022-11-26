@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const dotenv = require('dotenv');
 require('dotenv').config()
 const port = process.env.PORT || 5000
@@ -21,6 +21,9 @@ const client = new MongoClient(uri, {
 async function run () {
 try{
 const categoriesCollection = client.db('crazy-resale-deals').collection('categories')
+const productsCollection = client
+  .db("crazy-resale-deals")
+  .collection("products");
 
 // categories
 app.get('/categories', async(req, res) => {
@@ -29,6 +32,12 @@ app.get('/categories', async(req, res) => {
   res.send(result) 
 })
 
+app.get("/categories/:id", async (req, res) => {
+  const categoryId = req.params.id;
+  const query = {categoryId : ObjectId(categoryId)};
+  const products = await productsCollection.find(query).toArray();
+  res.send(products);
+});
 }
 finally{}
 }
