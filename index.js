@@ -28,6 +28,7 @@ async function run() {
       .collection("products");
     const usersCollection = client.db("crazy-resale-deals").collection("users");
     const bookingsCollection = client.db("crazy-resale-deals").collection("bookings");
+
     // categories
     app.get("/categories", async (req, res) => {
       const query = {};
