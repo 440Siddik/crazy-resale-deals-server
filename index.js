@@ -27,7 +27,9 @@ async function run() {
       .db("crazy-resale-deals")
       .collection("products");
     const usersCollection = client.db("crazy-resale-deals").collection("users");
-    const bookingsCollection = client.db("crazy-resale-deals").collection("bookings");
+    const bookingsCollection = client
+      .db("crazy-resale-deals")
+      .collection("bookings");
 
     // categories
     app.get("/categories", async (req, res) => {
@@ -42,25 +44,75 @@ async function run() {
       const products = await productsCollection.find(query).toArray();
       res.send(products);
     });
-// bookings 
-app.get('/bookings', async(req, res) => {
-  const email = req.query.email;
-  const query = {email:email}
-  const bookings = await bookingsCollection.find(query).toArray()
-  res.send(bookings)
-})
-app.post('/bookings', async (req, res) => {
-  const booking = req.body;
-  console.log(booking)
-  const result = await bookingsCollection.insertOne(booking)
-  res.send(result)
-})
+    // bookings
+    app.get("/bookings", async (req, res) => {
+      const email = req.query.email;
+      const query = { email: email };
+      const bookings = await bookingsCollection.find(query).toArray();
+      res.send(bookings);
+    });
+    app.post("/bookings", async (req, res) => {
+      const booking = req.body;
+      console.log(booking);
+      const result = await bookingsCollection.insertOne(booking);
+      res.send(result);
+    });
+    app.put("/seller", async (req, res) => {
+      const email = req.query.email;
+      const filter = { email: email };
+      const options = { upsert: true };
+      const updatedDoc = {
+        $set: {
+          role: "Seller",
+        },
+      };
+      const result = await usersCollection.updateOne(
+        filter,
+        updatedDoc,
+        options
+      );
+      res.send(result);
+    });
+
+    app.put("/googleloginbuyer", async (req, res) => {
+      const email = req.query.email;
+      const filter = { email: email };
+      const options = { upsert: true };
+      const updatedDoc = {
+        $set: {
+          role: "Buyer",
+        },
+      };
+      const result = await usersCollection.updateOne(
+        filter,
+        updatedDoc,
+        options
+      );
+      res.send(result);
+    });
+
+    app.put("/buyer", async (req, res) => {
+      const email = req.query.email;
+      const filter = { email: email };
+      const options = { upsert: true };
+      const updatedDoc = {
+        $set: {
+          role: "Buyer",
+        },
+      };
+      const result = await usersCollection.updateOne(
+        filter,
+        updatedDoc,
+        options
+      );
+      res.send(result);
+    });
     //users
-    app.post('/users', async (req, res) => {
+    app.post("/users", async (req, res) => {
       const user = req.body;
-      const result = await usersCollection.insertOne(user)
-      res.send(result)
-    })
+      const result = await usersCollection.insertOne(user);
+      res.send(result);
+    });
   } finally {
   }
 }
