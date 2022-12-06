@@ -57,6 +57,8 @@ async function run() {
       const result = await bookingsCollection.insertOne(booking);
       res.send(result);
     });
+
+    //userRole
     app.put("/seller", async (req, res) => {
       const email = req.query.email;
       const filter = { email: email };
@@ -113,6 +115,24 @@ async function run() {
       const result = await usersCollection.insertOne(user);
       res.send(result);
     });
+
+    //seller check
+
+    app.get('/users/seller/:email', async(req, res)=> {
+      const email = req.params.email;
+      const query = {email}
+      const user = await usersCollection.findOne(query)
+      res.send({isSeller : user?.role === 'Seller'})
+    })
+    
+    //buyer check
+
+    app.get('/users/buyer/:email', async (req, res) => {
+      const email = req.params.email;
+      const query = {email}
+      const user = await usersCollection.findOne(query)
+      res.send({isBuyer : user?.role === 'Buyer'})
+    })
   } finally {
   }
 }
